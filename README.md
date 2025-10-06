@@ -1,13 +1,15 @@
 
 # 🎮 Under Legend: Aetherium Ascension
 ## 传说之地：魔晶争霸 - 数字计分板
-
+> 一款为《传说之地：魔晶争霸》桌游设计的数字计分工具，支持魔晶追踪、单位管理和胜利动画。
+> 
 [![GitHub Pages](https://img.shields.io/badge/demo-live-brightgreen)](https://sa1koro.github.io/DATT2300/)
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-> 一款为《传说之地：魔晶争霸》桌游设计的数字计分工具，支持魔晶追踪、单位管理和胜利动画。
+
 <img width="256" height="256" alt="image" src="https://github.com/user-attachments/assets/f68ea04c-33bd-47bf-8b59-43bd9c5e10e3" />
+
 ---
 
 ## 📖 游戏简介
@@ -55,11 +57,9 @@
 ## 🚀 快速开始
 
 ### 在线使用
-访问 GitHub Pages 部署的在线版本：
+访问 GitHub Pages 部署的[在线版本](https://sa1koro.github.io/DATT2300/)
 
-```
-https://sa1koro.github.io/DATT2300/
-```
+
 
 ### 本地使用
 1. 克隆仓库到本地
