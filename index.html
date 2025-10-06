@@ -358,6 +358,13 @@
 
         // Trigger Victory Animation
         function triggerVictory() {
+
+            // Check if there is already a victory popup to avoid creating duplicates
+            const existingOverlay = document.querySelector('.victory-overlay');
+            if (existingOverlay) {
+                return; // If a popup already exists, return immediately
+            }
+            
             // Add Victory Animation
             manaScoreSpan.classList.add('victory-animation');
 
@@ -382,10 +389,12 @@
                     </div>
                 `;
                 document.body.appendChild(overlay);
-
-                document.getElementById('close-victory').addEventListener('click', () => {
-                    document.body.removeChild(overlay);
-                    manaScoreSpan.classList.remove('victory-animation');
+                
+                // Bind the event listener immediately, rather than delaying
+                const closeBtn = document.getElementById('close-victory');
+                closeBtn.addEventListener('click', function() {
+                  document.body.removeChild(overlay);
+                  manaScoreSpan.classList.remove('victory-animation');
                 });
             }, 1000);
         }
