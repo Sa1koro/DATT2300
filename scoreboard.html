@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF--8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>传说之地：魔晶争霸 - 计分板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            touch-action: manipulation; /* 优化移动端点击响应 */
+        }
+        .btn {
+            @apply w-10 h-10 text-xl font-bold rounded-full bg-gray-600 text-white flex items-center justify-center transition-transform transform active:scale-90;
+        }
+        .unit-hp-input {
+            @apply w-12 text-center bg-transparent text-2xl font-bold;
+        }
+        .player-card {
+            @apply bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-700 transition-all;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white p-4 font-sans">
+
+    <header class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-purple-400">Under Legend: Aetherium Ascension</h1>
+        <p class="text-xl text-gray-400">计分板 / Scoreboard</p>
+    </header>
+
+    <div id="scoreboard" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        
+        <div id="player-1" class="player-card">
+            <input type="text" value="玩家 1" class="w-full bg-gray-700 text-center text-2xl font-bold rounded p-1 mb-4">
+            
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-4xl">💎</span>
+                <div class="flex items-center gap-2">
+                    <button class="btn minus-mana">-</button>
+                    <span class="text-4xl font-bold w-20 text-center mana-score">5</span>
+                    <button class="btn plus-mana">+</button>
+                </div>
+            </div>
+
+            <div class="space-y-2 units-list">
+                </div>
+
+            <button class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 add-unit-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                添加单位
+            </button>
+        </div>
+
+        <div id="player-2" class="player-card">
+            <input type="text" value="玩家 2" class="w-full bg-gray-700 text-center text-2xl font-bold rounded p-1 mb-4">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-4xl">💎</span>
+                <div class="flex items-center gap-2">
+                    <button class="btn minus-mana">-</button>
+                    <span class="text-4xl font-bold w-20 text-center mana-score">5</span>
+                    <button class="btn plus-mana">+</button>
+                </div>
+            </div>
+            <div class="space-y-2 units-list"></div>
+            <button class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 add-unit-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                添加单位
+            </button>
+        </div>
+        
+    </div>
+
+    <script>
+        function setupPlayerCard(playerCard) {
+            const manaScore = playerCard.querySelector('.mana-score');
+            const plusManaBtn = playerCard.querySelector('.plus-mana');
+            const minusManaBtn = playerCard.querySelector('.minus-mana');
+            const addUnitBtn = playerCard.querySelector('.add-unit-btn');
+            const unitsList = playerCard.querySelector('.units-list');
+
+            plusManaBtn.addEventListener('click', () => {
+                manaScore.textContent = parseInt(manaScore.textContent) + 1;
+            });
+
+            minusManaBtn.addEventListener('click', () => {
+                let currentScore = parseInt(manaScore.textContent);
+                if (currentScore > 0) {
+                    manaScore.textContent = currentScore - 1;
+                }
+            });
+
+            addUnitBtn.addEventListener('click', () => {
+                const unitId = 'unit-' + Date.now();
+                const unitElement = document.createElement('div');
+                unitElement.classList.add('flex', 'items-center', 'justify-between', 'bg-gray-700', 'p-2', 'rounded-lg');
+                unitElement.innerHTML = `
+                    <span class="text-2xl">♟️</span>
+                    <input type="number" value="3" class="unit-hp-input" placeholder="HP">
+                    <button class="text-red-500 font-bold text-2xl remove-unit-btn">&times;</button>
+                `;
+                unitsList.appendChild(unitElement);
+
+                unitElement.querySelector('.remove-unit-btn').addEventListener('click', () => {
+                    unitElement.remove();
+                });
+            });
+        }
+
+        document.querySelectorAll('.player-card').forEach(setupPlayerCard);
+    </script>
+</body>
+</html>
