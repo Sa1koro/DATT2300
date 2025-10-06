@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Legend: Aetherium Ascension - Scoreboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            touch-action: manipulation;
+        }
+        .btn {
+            min-width: 2.5rem;
+            min-height: 2.5rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border-radius: 9999px;
+            background-color: #4b5563;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn:active {
+            transform: scale(0.9);
+        }
+        .btn-small {
+            min-width: 2rem;
+            min-height: 2rem;
+            font-size: 1rem;
+        }
+        .unit-hp-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 3rem;
+            text-align: center;
+        }
+        .player-card {
+            background-color: #1f2937;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 2px solid #374151;
+        }
+        
+        /* Victory Animation */
+        @keyframes victory {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(5deg); }
+            50% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.2) rotate(5deg); }
+        }
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        .victory-animation {
+            animation: victory 0.6s ease-in-out 3;
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confetti 3s linear forwards;
+            z-index: 1000;
+        }
+        .victory-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .victory-text {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #fbbf24;
+            text-shadow: 0 0 20px #fbbf24;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white p-4 font-sans">
+
+    <header class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-purple-400">Under Legend: Aetherium Ascension</h1>
+        <p class="text-xl text-gray-400">yet a DATT2300 Table Game</p>
+    </header>
+
+    <div class="max-w-md mx-auto">
+        <div id="player-card" class="player-card">
+            <!-- Player Name and Order Number -->
+            <div class="flex items-center justify-between mb-4">
+                <input type="text" id="player-name" value="Player" 
+                    class="bg-gray-700 text-center text-2xl font-bold rounded p-2 flex-1 mr-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">#️⃣</span>
+                    <span class="text-2xl font-bold" id="player-number">1</span>
+                    <button id="cycle-number-btn" class="btn btn-small" title="Switch Player Order">
+                        🔄
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Crystal Counter -->
+            <div class="flex items-center justify-between mb-6 bg-gray-700 p-4 rounded-lg">
+                <span class="text-5xl">💎</span>
+                <div class="flex items-center gap-3">
+                    <button class="btn" id="minus-mana">−</button>
+                    <span class="text-5xl font-bold w-24 text-center" id="mana-score">5</span>
+                    <button class="btn" id="plus-mana">+</button>
+                </div>
+            </div>
+
+            <!-- Units List -->
+            <div class="space-y-3 mb-4" id="units-list"></div>
+
+            <!-- Units Add Button -->
+            <button id="add-unit-btn" 
+                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add a Unit
+            </button>
+
+            <!-- Reset Button -->
+            <button id="reset-btn" 
+                class="w-full mt-3 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                Game Reset 
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Elements Unit Default Setting
+        const ELEMENTS = [
+            { emoji: '🔥', name: 'Fire', defaultHP: 2 },
+            { emoji: '💧', name: 'Water', defaultHP: 3 },
+            { emoji: '⚙️', name: 'Metal', defaultHP: 3 },
+            { emoji: '🌿', name: 'Wood', defaultHP: 2 },
+            { emoji: '🪨', name: 'Earth', defaultHP: 5 }
+        ];
+
+        const VICTORY_THRESHOLD = 42;
+
+        // State Management
+        let gameState = {
+            playerName: 'Player',
+            playerNumber: 1,
+            mana: 5,
+            units: []
+        };
+
+        // DOM 
+        const playerNameInput = document.getElementById('player-name');
+        const playerNumberSpan = document.getElementById('player-number');
+        const cycleNumberBtn = document.getElementById('cycle-number-btn');
+        const manaScoreSpan = document.getElementById('mana-score');
+        const plusManaBtn = document.getElementById('plus-mana');
+        const minusManaBtn = document.getElementById('minus-mana');
+        const addUnitBtn = document.getElementById('add-unit-btn');
+        const unitsList = document.getElementById('units-list');
+        const resetBtn = document.getElementById('reset-btn');
+
+        // Loading Save Data
+        function loadGameState() {
+            const saved = localStorage.getItem('gameState');
+            if (saved) {
+                try {
+                    gameState = JSON.parse(saved);
+                    updateUI();
+                } catch (e) {
+                    console.error('Loading Data Failed:', e);
+                }
+            }
+        }
+
+        // Saving Data
+        function saveGameState() {
+            localStorage.setItem('gameState', JSON.stringify(gameState));
+        }
+
+        // UI Update
+        function updateUI() {
+            playerNameInput.value = gameState.playerName;
+            playerNumberSpan.textContent = gameState.playerNumber;
+            manaScoreSpan.textContent = gameState.mana;
+            renderUnits();
+            checkVictory();
+        }
+
+        // Switch Player Order
+        cycleNumberBtn.addEventListener('click', () => {
+            gameState.playerNumber = (gameState.playerNumber % 5) + 1;
+            saveGameState();
+            updateUI();
+        });
+
+        // Player Name Change
+        playerNameInput.addEventListener('input', (e) => {
+            gameState.playerName = e.target.value;
+            saveGameState();
+        });
+
+        // Mana Change
+        plusManaBtn.addEventListener('click', () => {
+            gameState.mana++;
+            saveGameState();
+            updateUI();
+        });
+
+        minusManaBtn.addEventListener('click', () => {
+            if (gameState.mana > 0) {
+                gameState.mana--;
+                saveGameState();
+                updateUI();
+            }
+        });
+
+        // Units Add
+        addUnitBtn.addEventListener('click', () => {
+            showElementSelector();
+        });
+
+        // Element Selector
+        function showElementSelector() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-gray-800 rounded-lg p-6 max-w-sm w-full mx-4">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-purple-400">Choose the matching element for the deployed unit</h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        ${ELEMENTS.map((el, idx) => `
+                            <button class="element-choice bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-center transition-colors" data-index="${idx}">
+                                <div class="text-4xl mb-1">${el.emoji}</div>
+                                <div class="text-sm">${el.name}</div>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <button class="cancel-btn w-full mt-4 bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
+                        Cancel
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            modal.querySelectorAll('.element-choice').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.dataset.index);
+                    const element = ELEMENTS[index];
+                    addUnit(element);
+                    document.body.removeChild(modal);
+                });
+            });
+
+            modal.querySelector('.cancel-btn').addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+        }
+
+        // Add to the Units List
+        function addUnit(element) {
+            const unit = {
+                id: Date.now(),
+                element: element,
+                hp: element.defaultHP,
+                maxHP: element.defaultHP
+            };
+            gameState.units.push(unit);
+            saveGameState();
+            updateUI();
+        }
+
+        // Render the Units List
+        function renderUnits() {
+            unitsList.innerHTML = '';
+            gameState.units.forEach(unit => {
+                const unitDiv = document.createElement('div');
+                unitDiv.className = 'flex items-center justify-between bg-gray-700 p-3 rounded-lg';
+                unitDiv.innerHTML = `
+                    <span class="text-3xl">${unit.element.emoji}</span>
+                    <div class="flex items-center gap-2">
+                        <button class="btn btn-small hp-minus" data-id="${unit.id}">−</button>
+                        <span class="unit-hp-display">${unit.hp}</span>
+                        <button class="btn btn-small hp-plus" data-id="${unit.id}">+</button>
+                    </div>
+                    <button class="text-red-500 font-bold text-3xl remove-unit" data-id="${unit.id}">×</button>
+                `;
+                unitsList.appendChild(unitDiv);
+            });
+
+            // Bind to the events
+            document.querySelectorAll('.hp-minus').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const unitId = parseInt(e.target.dataset.id);
+                    modifyUnitHP(unitId, -1);
+                });
+            });
+
+            document.querySelectorAll('.hp-plus').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const unitId = parseInt(e.target.dataset.id);
+                    modifyUnitHP(unitId, 1);
+                });
+            });
+
+            document.querySelectorAll('.remove-unit').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const unitId = parseInt(e.target.dataset.id);
+                    removeUnit(unitId);
+                });
+            });
+        }
+
+        // Change the Units HP
+        function modifyUnitHP(unitId, delta) {
+            const unit = gameState.units.find(u => u.id === unitId);
+            if (unit) {
+                unit.hp = Math.max(0, unit.hp + delta);
+                saveGameState();
+                updateUI();
+            }
+        }
+
+        // Remove Unit
+        function removeUnit(unitId) {
+            gameState.units = gameState.units.filter(u => u.id !== unitId);
+            saveGameState();
+            updateUI();
+        }
+
+        // Check the Victory
+        function checkVictory() {
+            if (gameState.mana >= VICTORY_THRESHOLD) {
+                triggerVictory();
+            }
+        }
+
+        // Trigger Victory Animation
+        function triggerVictory() {
+            // Add Victory Animation
+            manaScoreSpan.classList.add('victory-animation');
+
+            // Create the Animation Effects
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    createConfetti();
+                }, i * 50);
+            }
+
+            // Popup the Victory Window
+            setTimeout(() => {
+                const overlay = document.createElement('div');
+                overlay.className = 'victory-overlay';
+                overlay.innerHTML = `
+                    <div class="text-center">
+                        <div class="victory-text">🎉 VICTORY！🎉</div>
+                        <p class="text-2xl text-white mt-4">${gameState.playerName} ${gameState.playerNumber} obtained ${gameState.mana} Mana Crystals！</p>
+                        <button id="close-victory" class="mt-6 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg text-xl">
+                            CONTINUE
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+
+                document.getElementById('close-victory').addEventListener('click', () => {
+                    document.body.removeChild(overlay);
+                    manaScoreSpan.classList.remove('victory-animation');
+                });
+            }, 1000);
+        }
+
+        // Create Confetti
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = ['#fbbf24', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'][Math.floor(Math.random() * 5)];
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            document.body.appendChild(confetti);
+
+            setTimeout(() => {
+                confetti.remove();
+            }, 3000);
+        }
+
+        // Reset the GAME
+        resetBtn.addEventListener('click', () => {
+            if (confirm('Sure to reset the game? All data will be wiped.')) {
+                gameState = {
+                    playerName: 'Player',
+                    playerNumber: 1,
+                    mana: 5,
+                    units: []
+                };
+                saveGameState();
+                updateUI();
+            }
+        });
+
+        // Initialize
+        loadGameState();
+    </script>
+</body>
+</html>
