@@ -2,7 +2,7 @@
 # 🎮 Under Legend: Aetherium Ascension
 ## 传说之地：魔晶争霸 - 数字计分板
 
-[![GitHub Pages](https://img.shields.io/badge/demo-live-brightgreen)](https://your-username.github.io/your-repo-name/)
+[![GitHub Pages](https://img.shields.io/badge/demo-live-brightgreen)](https://sa1koro.github.io/DATT2300/)
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
