@@ -148,7 +148,66 @@
             Game Reset
         </button>
     </div>
-    <!-- 将这段代码添加到 <div id="player-card" class="player-card"> 内部，放在重置按钮之后 -->
+
+    <style>    #back-to-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(to right, #8b5cf6, #6366f1);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        z-index: 100;
+    }
+
+    #back-to-top:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    #back-to-top:active {
+        transform: translateY(-1px);
+    }
+    </style>
+
+    <button id="back-to-top" title="Back to Top">↑</button>
+
+    <script>    // 返回顶部功能
+    document.addEventListener('DOMContentLoaded', function() {
+        const backToTopButton = document.getElementById('back-to-top');
+
+        // 监听滚动事件，控制按钮显示/隐藏
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.display = 'flex';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        // 点击按钮返回顶部
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 初始隐藏按钮
+        backToTopButton.style.display = 'none';
+    });
+    </script>
+
+    <!-- Game Rules & Background -->
     <div class="mt-6">
         <button id="rules-toggle-btn"
                 class="w-full bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
@@ -219,6 +278,338 @@
             </div>
 
         </div>
+
+        <!-- Card Deck Details -->
+        <div class="mt-4">
+            <button id="cards-toggle-btn"
+                    class="w-full bg-gradient-to-r from-teal-600 to-cyan-700 hover:from-teal-700 hover:to-cyan-800 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Commander Skills & Card Details
+            </button>
+
+            <div id="cards-content" class="mt-4 hidden bg-gray-800 rounded-lg p-5 text-gray-100">
+                <h2 class="text-2xl font-bold text-center mb-4 text-cyan-400">Commander Skills & Card Details</h2>
+
+                <!-- Commander Skills Section -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3 text-green-400 border-b border-green-400 pb-1">Commander Skills</h3>
+
+                    <div class="space-y-4">
+                        <!-- Viridian -->
+                        <div class="bg-gray-700 p-3 rounded-lg">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-2xl">🌿</span>
+                                <h4 class="text-lg font-bold">Viridian - Voice of the Forest</h4>
+                                <span class="text-sm bg-green-600 px-2 py-1 rounded">Wood</span>
+                            </div>
+                            <p class="text-sm"><span class="font-semibold">[Forest Resonance] V2:</span> The Aetherium cost to summon your "Wood" element units is reduced by 1. Additionally, when your Commander is on a "Wood" mine, the cost of your "Draw" and "Summon" actions is reduced by 1.</p>
+                        </div>
+
+                        <!-- Cronia -->
+                        <div class="bg-gray-700 p-3 rounded-lg">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-2xl">💧</span>
+                                <h4 class="text-lg font-bold">Cronia - Observer of Spacetime</h4>
+                                <span class="text-sm bg-blue-600 px-2 py-1 rounded">Water</span>
+                            </div>
+                            <p class="text-sm"><span class="font-semibold">[Temporal Vortex] V2:</span> Once during your turn, you may pay 2 Aetherium to look at the top 3 cards of your deck. Add one to your hand and place the other two back on top in any order.</p>
+                        </div>
+
+                        <!-- Ignis -->
+                        <div class="bg-gray-700 p-3 rounded-lg">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-2xl">🔥</span>
+                                <h4 class="text-lg font-bold">Ignis - Fury of Embers</h4>
+                                <span class="text-sm bg-red-600 px-2 py-1 rounded">Fire</span>
+                            </div>
+                            <p class="text-sm"><span class="font-semibold">[Blazing Assault] V2:</span> Units you summon can perform a "Move" action on the same turn they are summoned. This movement does not cost Aetherium, but you must still roll the die.</p>
+                        </div>
+
+                        <!-- Terra -->
+                        <div class="bg-gray-700 p-3 rounded-lg">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-2xl">🪨</span>
+                                <h4 class="text-lg font-bold">Terra - Guardian of Earth</h4>
+                                <span class="text-sm bg-yellow-700 px-2 py-1 rounded">Earth</span>
+                            </div>
+                            <p class="text-sm"><span class="font-semibold">[Earthen Bastion] V2:</span> (Passive) All of your units stationed on an "Earth" mine gain +1 to their maximum and current HP.</p>
+                        </div>
+
+                        <!-- Aurum -->
+                        <div class="bg-gray-700 p-3 rounded-lg">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-2xl">⚙️</span>
+                                <h4 class="text-lg font-bold">Aurum - The Gilded Alchemist</h4>
+                                <span class="text-sm bg-gray-400 px-2 py-1 rounded">Metal</span>
+                            </div>
+                            <p class="text-sm"><span class="font-semibold">[Aether Transmutation] V2:</span> During your Collection Phase, each "Metal" mine you control produces 1 additional Aetherium. Additionally, your Commander is also considered a "Metal" element unit.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unit Cards Section -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3 text-yellow-400 border-b border-yellow-400 pb-1">Unit Cards (14)</h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-gray-700 rounded-lg overflow-hidden">
+                            <thead>
+                            <tr class="bg-gray-600">
+                                <th class="py-2 px-2 text-left">Name</th>
+                                <th class="py-2 px-2 text-left">Element</th>
+                                <th class="py-2 px-2 text-center">Cost</th>
+                                <th class="py-2 px-2 text-center">ATK</th>
+                                <th class="py-2 px-2 text-center">HP</th>
+                                <th class="py-2 px-2 text-center">Qty.</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="border-b border-gray-600">
+                                <td class="py-2 px-2">Flame Salamander</td>
+                                <td class="py-2 px-2"><span class="text-red-400">🔥 Fire</span></td>
+                                <td class="py-2 px-2 text-center">1</td>
+                                <td class="py-2 px-2 text-center">2</td>
+                                <td class="py-2 px-2 text-center">2</td>
+                                <td class="py-2 px-2 text-center">3</td>
+                            </tr>
+                            <tr class="border-b border-gray-600">
+                                <td class="py-2 px-2">Tidal Serpent</td>
+                                <td class="py-2 px-2"><span class="text-blue-400">💧 Water</span></td>
+                                <td class="py-2 px-2 text-center">2</td>
+                                <td class="py-2 px-2 text-center">1</td>
+                                <td class="py-2 px-2 text-center">3</td>
+                                <td class="py-2 px-2 text-center">3</td>
+                            </tr>
+                            <tr class="border-b border-gray-600">
+                                <td class="py-2 px-2">Metal Defender</td>
+                                <td class="py-2 px-2"><span class="text-gray-300">⚙️ Metal</span></td>
+                                <td class="py-2 px-2 text-center">3</td>
+                                <td class="py-2 px-2 text-center">2</td>
+                                <td class="py-2 px-2 text-center">4</td>
+                                <td class="py-2 px-2 text-center">3</td>
+                            </tr>
+                            <tr class="border-b border-gray-600">
+                                <td class="py-2 px-2">Forest Sprite</td>
+                                <td class="py-2 px-2"><span class="text-green-400">🌿 Wood</span></td>
+                                <td class="py-2 px-2 text-center">3</td>
+                                <td class="py-2 px-2 text-center">3</td>
+                                <td class="py-2 px-2 text-center">3</td>
+                                <td class="py-2 px-2 text-center">3</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-2">Stone Golem</td>
+                                <td class="py-2 px-2"><span class="text-yellow-600">🪨 Earth</span></td>
+                                <td class="py-2 px-2 text-center">4</td>
+                                <td class="py-2 px-2 text-center">2</td>
+                                <td class="py-2 px-2 text-center">6</td>
+                                <td class="py-2 px-2 text-center">2</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tactic Cards Section -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-3 text-purple-400 border-b border-purple-400 pb-1">Tactic Cards (6)</h3>
+
+                    <div class="space-y-3">
+                        <div class="bg-gray-700 p-3 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-bold">Aether Shard</h4>
+                                    <p class="text-sm">Cost: 0 | Effect: Gain 1 Aetherium, then draw a card</p>
+                                </div>
+                                <span class="bg-purple-600 px-2 py-1 rounded">3x</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-700 p-3 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-bold">Sudden Strike</h4>
+                                    <p class="text-sm">Cost: 1 | Effect: Choose one of your units. It gets +1 ATK this turn</p>
+                                </div>
+                                <span class="bg-purple-600 px-2 py-1 rounded">3x</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--  Card Images Section  -->
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-3 text-teal-400 border-b border-teal-400 pb-1 inline-block">Card Examples</h3>
+
+                    <!-- Commander Cards Section -->
+                    <div class="mb-6">
+                        <h4 class="font-bold text-center mb-2">Commanders</h4>
+                        <div class="relative bg-gray-300 p-4 rounded-lg mx-4">
+                            <div class="overflow-hidden relative">
+                                <div id="commander-cards-container" class="flex transition-transform duration-300 ease-in-out">
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Hero_Fire.png" alt="Ignis" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Hero_Water.png" alt="Cronia" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Hero_Metal.png" alt="Aurum" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Hero_Wood.png" alt="Viridian" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Hero_Earth.png" alt="Terra" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="commander-prev" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full w-8 h-8 flex items-center justify-center">&#8249;</button>
+                            <button id="commander-next" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full w-8 h-8 flex items-center justify-center">&#8250;</button>
+                        </div>
+                    </div>
+
+                    <!-- Unit Cards Section -->
+                    <div class="mb-6">
+                        <h4 class="font-bold text-center mb-2">Units</h4>
+                        <div class="relative bg-gray-300 p-4 rounded-lg mx-4">
+                            <div class="overflow-hidden relative">
+                                <div id="unit-cards-container" class="flex transition-transform duration-300 ease-in-out">
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Unit_Fire.png" alt="Fire Unit" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Unit_Water.png" alt="Water Unit" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Unit_Metal.png" alt="Metal Unit" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Unit_Wood.png" alt="Wood Unit" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Unit_Earth.png" alt="Earth Unit" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="unit-prev" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full w-8 h-8 flex items-center justify-center">&#8249;</button>
+                            <button id="unit-next" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full w-8 h-8 flex items-center justify-center">&#8250;</button>
+                        </div>
+                    </div>
+
+                    <!-- Tactic Cards Section -->
+                    <div class="mb-6">
+                        <h4 class="font-bold text-center mb-2">Tactics</h4>
+                        <div class="relative bg-gray-300 p-4 rounded-lg mx-4">
+                            <div class="overflow-hidden relative">
+                                <div id="tactic-cards-container" class="flex transition-transform duration-300 ease-in-out">
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Tac_Shard.png" alt="Aether Shard" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                    <div class="flex-shrink-0 w-full flex justify-center">
+                                        <img src="img/Tac_Assault.png" alt="Sudden Strike" class="card-image w-48 h-auto rounded cursor-pointer">
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="tactic-prev" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full w-8 h-8 flex items-center justify-center">&#8249;</button>
+                            <button id="tactic-next" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full w-8 h-8 flex items-center justify-center">&#8250;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal for enlarged card view -->
+                <div id="card-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+                    <div class="relative">
+                        <img id="modal-card-image" src="" alt="Enlarged Card" class="max-w-full max-h-full rounded-lg">
+                        <button id="close-modal" class="absolute top-2 right-2 bg-black bg-opacity-50 text-white rounded-full w-8 h-8 flex items-center justify-center">&times;</button>
+                    </div>
+                </div>
+
+                <script>
+                    // 添加卡片轮播和放大功能
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // 轮播功能
+                        const carousels = [
+                            { container: 'commander-cards-container', prev: 'commander-prev', next: 'commander-next', count: 5 },
+                            { container: 'unit-cards-container', prev: 'unit-prev', next: 'unit-next', count: 5 },
+                            { container: 'tactic-cards-container', prev: 'tactic-prev', next: 'tactic-next', count: 2 }
+                        ];
+
+                        carousels.forEach(carousel => {
+                            const container = document.getElementById(carousel.container);
+                            const prevBtn = document.getElementById(carousel.prev);
+                            const nextBtn = document.getElementById(carousel.next);
+                            let currentIndex = 0;
+                            const cardWidth = container.parentElement.offsetWidth;
+
+                            function updateCarousel() {
+                                container.style.transform = `translateX(-${currentIndex * 100}%)`;
+                            }
+
+                            prevBtn.addEventListener('click', () => {
+                                currentIndex = (currentIndex - 1 + carousel.count) % carousel.count;
+                                updateCarousel();
+                            });
+
+                            nextBtn.addEventListener('click', () => {
+                                currentIndex = (currentIndex + 1) % carousel.count;
+                                updateCarousel();
+                            });
+                        });
+
+                        // 卡片放大功能
+                        const modal = document.getElementById('card-modal');
+                        const modalImage = document.getElementById('modal-card-image');
+                        const closeModalBtn = document.getElementById('close-modal');
+                        const cardImages = document.querySelectorAll('.card-image');
+
+                        cardImages.forEach(img => {
+                            img.addEventListener('click', () => {
+                                modalImage.src = img.src;
+                                modalImage.alt = img.alt;
+                                modal.classList.remove('hidden');
+                            });
+                        });
+
+                        closeModalBtn.addEventListener('click', () => {
+                            modal.classList.add('hidden');
+                        });
+
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) {
+                                modal.classList.add('hidden');
+                            }
+                        });
+                    });
+                </script>
+
+            </div>
+        </div>
+
+        <script>
+            // 添加卡片详情切换功能
+            document.addEventListener('DOMContentLoaded', function() {
+                const cardsToggleBtn = document.getElementById('cards-toggle-btn');
+                const cardsContent = document.getElementById('cards-content');
+
+                if (cardsToggleBtn && cardsContent) {
+                    cardsToggleBtn.addEventListener('click', function() {
+                        cardsContent.classList.toggle('hidden');
+
+                        // 更新按钮文字和图标
+                        const isVisible = !cardsContent.classList.contains('hidden');
+                        cardsToggleBtn.innerHTML = isVisible ?
+                            `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg> Hide Card Details` :
+                            `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg> Commander Skills & Card Details`;
+                    });
+                }
+            });
+        </script>
 
         <div class="text-center mt-6">
             <h3 class="text-xl font-semibold mb-3 text-teal-400 border-b border-teal-400 pb-1 inline-block">Elemental Cycle</h3>
